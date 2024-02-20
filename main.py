@@ -39,8 +39,8 @@ class Node:
                 return float('-infinity')
             if 0 in set(self.dists_to_goal.values()):
                 return float('infinity')
-            return self.dists_to_goal[pid] - (1 if self.state.player_to_move_index == pid else 0) -\
-                 min(self.dists_to_goal[enemy] for enemy in range(len(self.state.players)) if enemy != pid)
+            return self.dists_to_goal[pid] - (1 if self.state.player_to_move_index == pid else 0) - \
+                min(self.dists_to_goal[enemy] for enemy in range(len(self.state.players)) if enemy != pid)
         else:
             if len(self.children) == 0:
                 self.expand()
@@ -56,6 +56,7 @@ class Node:
                     if b > beta:
                         beta = b
                 return beta
+
 
 class Player:
     def __init__(self, id):
@@ -96,6 +97,7 @@ class Player:
         elif self.id == 3:
             return self.pos[0]
 
+
 class State:
     def __init__(self, num_of_players=PLAYERS_PLAYING):
         if num_of_players == 2:
@@ -120,6 +122,7 @@ class State:
         if want_print:
             print(f'Action {action} taken.')
         return new_state
+
     def next_player(self):
         self.player_to_move_index = (self.player_to_move_index + 1) % len(self.players)
 
@@ -302,7 +305,7 @@ class State:
                     board += ' - '
                 else:
                     board += '   '
-                board+='+'
+                board += '+'
             board += '|\n'
         return board
 
