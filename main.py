@@ -33,7 +33,7 @@ class Node:
         for action in moves + blocks:
             self.children.append(Node(self, action))
 
-    def alpha_value_for_pid(self, pid):
+    def alpha_value_for_pid(self, pid, stop_after=None):
         if self.depth >= DEPTH:
             if self.state.players[pid].has_won():
                 return float('-infinity')
@@ -47,8 +47,15 @@ class Node:
             if self.state.player_to_move_index == pid:
                 return min([c.alpha_value_for_pid(pid) for c in self.children])
             else:
-                return max([c.alpha_value_for_pid(pid) for c in self.children])
-
+                # return min([c.alpha_value_for_pid(pid) for c in self.children])
+                beta = float('-infinity')
+                for c in self.children:
+                    b = c.alpha_value_for_pid(pid, stop_after=stop_after)
+                    if stop_after is not None and b > stop_after:
+                        return b
+                    if b > beta:
+                        beta = b
+                return beta
 
 class Player:
     def __init__(self, id):
@@ -308,7 +315,7 @@ def alpha_beta_search(state):
     best_a = float('infinity')
     best_child = node.children[0]
     for c in node.children:
-        a = c.alpha_value_for_pid(pid)
+        a = c.alpha_value_for_pid(pid, stop_after=best_a)
         if a < best_a:
             print(f'A: {a}')
             best_a = a
